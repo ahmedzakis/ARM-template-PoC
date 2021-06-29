@@ -1,0 +1,120 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "actionGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Unique name (within the Resource Group) for the Action group."
+      }
+    },
+    "actionGroupShortName": {
+      "type": "string",
+      "metadata": {
+        "description": "Short name (maximum 12 characters) for the Action group."
+      }
+    },
+    "activityLogAlerts_Start_VM_Alert_name": {
+        "defaultValue": "Start_VM_Alert",
+        "type": "String"
+    },
+    "scopeid": {
+        "defaultValue": "[subscription().id]",
+        "type": "String"
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Insights/actionGroups",
+      "apiVersion": "2019-03-01",
+      "name": "[parameters('actionGroupName')]",
+      "location": "Global",
+      "properties": {
+        "groupShortName": "[parameters('actionGroupShortName')]",
+        "enabled": true,
+        "smsReceivers": [
+          {
+            "name": "contosoSMS",
+            "countryCode": "1",
+            "phoneNumber": "5555551212"
+          },
+          {
+            "name": "contosoSMS2",
+            "countryCode": "1",
+            "phoneNumber": "5555552121"
+          }
+        ],
+        "emailReceivers": [
+          {
+            "name": "contosoEmail",
+            "emailAddress": "devops@contoso.com",
+            "useCommonAlertSchema": true
+
+          },
+          {
+            "name": "contosoEmail2",
+            "emailAddress": "devops2@contoso.com",
+            "useCommonAlertSchema": true
+          }
+        ],
+        "webhookReceivers": [
+          {
+            "name": "contosoHook",
+            "serviceUri": "http://requestb.in/1bq62iu1",
+            "useCommonAlertSchema": true
+          },
+          {
+            "name": "contosoHook2",
+            "serviceUri": "http://requestb.in/1bq62iu2",
+            "useCommonAlertSchema": true
+          }
+        ]
+      },
+      "resources": [
+        {
+            "type": "microsoft.insights/activityLogAlerts",
+            "apiVersion": "2020-10-01",
+            "name": "[parameters('activityLogAlerts_Start_VM_Alert_name')]",
+            "location": "Global",
+            "properties": {
+                "scopes": [
+                    "[parameters('scopeid')]"
+                ],
+                "condition": {
+                    "allOf": [
+                        {
+                            "field": "category",
+                            "equals": "Administrative"
+                        },
+                        {
+                            "field": "operationName",
+                            "equals": "Microsoft.Compute/virtualMachines/start/action"
+                        }
+                    ]
+                },
+                "actions": {
+                    "actionGroups": [
+                        {
+                            "actionGroupId": "[resourceId('Microsoft.Insights/actionGroups', parameters('actionGroupName'))]",
+                            "webhookProperties": {}
+                        }
+                    ]
+                },
+                "enabled": true,
+                "description": "Runs whenever a start VM action is run. "
+            },
+            "dependsOn": [
+              //"[resourceId('Microsoft.Insights/actionGroups/', 'VMStartNotification_2')]"
+              "[resourceId('Microsoft.Insights/actionGroups/', parameters('actionGroupName'))]"
+            ]
+        }
+      ]
+    }
+  ],
+  "outputs":{
+      "actionGroupId":{
+          "type":"string",
+          "value":"[resourceId('Microsoft.Insights/actionGroups',parameters('actionGroupName'))]"
+      }
+  }
+}
