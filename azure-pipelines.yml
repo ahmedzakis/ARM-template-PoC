@@ -19,7 +19,7 @@ steps:
     resourceGroupName: 'Playpen'
     location: 'Australia East'
     templateLocation: 'URL of the file'
-    csmFileLink: 'https://raw.githubusercontent.com/ahmedzakis/ARM-template-PoC/main/TestAlertARMTemplate.json'
+    csmFileLink: 'https://raw.githubusercontent.com/ahmedzakis/ARM-template-PoC/main/TestAlertARMTemplate.json?token=AAJOBETIPSTSRNPSD5BAQRTA3VCI4'
     overrideParameters: '-actionGroupName VMStartNotification_4 -actionGroupShortName StartVM_4 -activityLogAlerts_Start_VM_Alert_name Start_VM_Alert_4'
     deploymentMode: 'Incremental'
     deploymentName: 'DeployARMTemplatePipeline'
