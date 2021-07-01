@@ -36,12 +36,12 @@
           {
             "name": "contosoSMS",
             "countryCode": "1",
-            "phoneNumber": "5555551212"
+            "phoneNumber": "5555551313"
           },
           {
             "name": "contosoSMS2",
             "countryCode": "1",
-            "phoneNumber": "5555552121"
+            "phoneNumber": "5555553131"
           }
         ],
         "emailReceivers": [
